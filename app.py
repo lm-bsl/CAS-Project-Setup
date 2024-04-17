@@ -57,7 +57,7 @@ Do you need more information about your role and task or is that well-defined so
 
 bot = Chatbot(
     database_file="database/chatbot.db",
-    type_id="coach",
+    type_id="prompt_coach",
     user_id="prompty",
     type_name="Prompt Assistant",
     type_role=my_type_role_prompt,
