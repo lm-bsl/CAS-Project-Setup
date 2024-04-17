@@ -1,5 +1,6 @@
 import logging
 import re
+import sqlite3
 
 import openai
 
@@ -145,3 +146,16 @@ class Chatbot:
 
     def type_instances(self):
         return self._persistence.type_instances()
+
+    def get_all_bots(self):
+        conn = sqlite3.connect('database/chatbot.db')
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT type, user FROM chatbot_instances")  # Assuming your table name is 'bots' and it has 'type_id' and 'user_id' columns
+        bots = cursor.fetchall()
+
+        # Convert the tuples to dictionaries
+        bots = [{"type_id": bot[0], "user_id": bot[1]} for bot in bots]
+
+        return bots

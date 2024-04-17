@@ -3,10 +3,12 @@ from flask import Flask, jsonify, render_template, request, send_file
 
 from chatbot.chatbot import Chatbot
 
+
 PYTHONANYWHERE_USERNAME = "carvice"
 PYTHONANYWHERE_WEBAPPNAME = "mysite"
 
 app = Flask(__name__)
+app.debug = os.getenv('FLASK_DEBUG') == '1'
 
 my_type_role = """
     As a digital therapy coach, check in daily with your patient to assess their well-being related to their chronic condition.
@@ -25,10 +27,8 @@ Verwende diese im geschlechtsneutralem Gespräch in Du-Form.
 Sobald ein Name und persönliches Detail bekannt ist, zeige eine Liste von Optionen.
 """
 
-
-
 bot = Chatbot(
-    database_file="database/chatbot.db", 
+    database_file="database/chatbot.db",
     type_id="coach",
     user_id="daniel",
     type_name="Health Coach",
@@ -56,7 +56,7 @@ Do you need more information about your role and task or is that well-defined so
 """
 
 bot = Chatbot(
-    database_file="database/chatbot.db", 
+    database_file="database/chatbot.db",
     type_id="coach",
     user_id="prompty",
     type_name="Prompt Assistant",
@@ -67,9 +67,11 @@ bot = Chatbot(
 
 bot.start()
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
+
 
 @app.route('/mockups.pdf', methods=['GET'])
 def get_first_pdf():
@@ -85,9 +87,21 @@ def get_first_pdf():
 
     return "No PDF file found in the root folder."
 
+
 @app.route("/<type_id>/<user_id>/chat")
 def chatbot(type_id: str, user_id: str):
     return render_template("chat.html")
+
+
+@app.route("/<type_id>/<user_id>/comparison")
+def chatbot_comp(type_id: str, user_id: str):
+    return render_template("comparison.html")
+
+
+@app.route("/bots")
+def get_bots():
+    bots = bot.get_all_bots()
+    return jsonify(bots)
 
 
 @app.route("/<type_id>/<user_id>/info")
