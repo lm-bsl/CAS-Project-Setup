@@ -20,35 +20,37 @@
         <a class="btn btn-primary btn-lg" href="/coach/daniel/chat" role="button">Our Coaching Bot (for Daniel)</a>
         <a class="btn btn-primary btn-lg" href="/prompt_coach/prompty/chat" role="button">Our prompt Bot</a>
       </div>
-
+      <h2>List of Bots</h2>
       <table class="table">
-        <thead>
+        <thead class="thead-dark"></thead>
           <tr>
-            <th scope="col">Bot Role</th>
-            <th scope="col">User</th>
+        <th scope="col">Bot Role</th>
+        <th scope="col">User</th>
           </tr>
         </thead>
-        <tbody>
-          <!-- Add your code here to retrieve and display the bot role and user from the /bots route -->
-          <script>
-            fetch('/bots')
-              .then(response => response.json())
-              .then(bots => {
-                bots.forEach(bot => {
-                  const row = document.createElement('tr');
-                  const roleCell = document.createElement('td');
-                  const userCell = document.createElement('td');
-                  roleCell.textContent = bot.role;
-                  userCell.textContent = bot.user;
-                  row.appendChild(roleCell);
-                  row.appendChild(userCell);
-                  document.querySelector('tbody').appendChild(row);
-                });
-              })
-              .catch(error => console.error(error));
-          </script>
+        <tbody id="botTableBody">
         </tbody>
       </table>
+      <script>
+        fetch('/bots')
+          .then(response => response.json())
+          .then(data => {
+            const botTableBody = document.getElementById('botTableBody');
+            data.forEach(bot => {
+              const row = document.createElement('tr');
+              const roleCell = document.createElement('td');
+              const userCell = document.createElement('td');
+              roleCell.textContent = bot.type_id;
+              userCell.textContent = bot.user_id;
+              row.appendChild(roleCell);
+              row.appendChild(userCell);
+              botTableBody.appendChild(row);
+            });
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      </script>
 
   </body>
 </html>
