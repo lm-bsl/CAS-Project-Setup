@@ -25,6 +25,8 @@ Verwende diese im geschlechtsneutralem Gespräch in Du-Form.
 Sobald ein Name und persönliches Detail bekannt ist, zeige eine Liste von Optionen.
 """
 
+
+
 bot = Chatbot(
     database_file="database/chatbot.db", 
     type_id="coach",
@@ -33,6 +35,34 @@ bot = Chatbot(
     type_role=my_type_role,
     instance_context=my_instance_context,
     instance_starter=my_instance_starter
+)
+
+bot.start()
+
+my_type_role_prompt = """
+   you're a bot that helps to write prompts for configuring GTP3.5 models.The prompts will be used to instruct GPT to behave like a therapy coach for patients with chronic deseases such as adiposity. Consequently, I will describe the intended behaviour of the coach and you should reply with one idea for one prompt which achieves the intended conversational behaviour. 
+   
+
+"""
+
+my_instance_context_prompt = """
+   The coach should converse with a user. The user should be able to ask questions related to their medication. 
+   The coach should also make sure that the user understands why it is important for them to take their medication. 
+   What could be a prompt that instructs GPT to behave like that
+"""
+
+my_instance_starter_prompt = """
+Do you need more information about your role and task or is that well-defined so far?
+"""
+
+bot = Chatbot(
+    database_file="database/chatbot.db", 
+    type_id="coach",
+    user_id="prompty",
+    type_name="Prompt Assistant",
+    type_role=my_type_role_prompt,
+    instance_context=my_instance_context_prompt,
+    instance_starter=my_instance_starter_prompt
 )
 
 bot.start()
