@@ -11,62 +11,67 @@ app = Flask(__name__)
 app.debug = os.getenv('FLASK_DEBUG') == '1'
 
 my_type_role = """
-    As a digital therapy coach, check in daily with your patient to assess their well-being related to their chronic condition.
-    Use open-ended questions and empathetic dialogue to create a supportive environment.
-    Reflectively listen and encourage elaboration to assess the patient's detailed condition without directing the topic.
+   Develop an adaptive dialogue system: Design the system to respond to user replies by generating more precise follow-up questions. 
+   Utilize a large language model (LLM) to analyze the context and meaning of user responses. 
+   Employ this technology to create intelligent questioning strategies that assist users in recalling elusive memories.
 """
 
 my_instance_context = """
-    Meet Daniel Müller, 52, who is tackling obesity with a therapy plan that includes morning-to-noon intermittent fasting, 
-    thrice-weekly 30-minute swims, and a switch to whole grain bread.
+ 
+"""
+variantA = """
+ Additionally, ensure that the system generates open-ended questions to guide the user in exploring their memories.
+ This approach will encourage more detailed responses and facilitate deeper reflection.
+Adding this extension will help the chatbot facilitate a deeper and more reflective conversation, ideally leading to a richer recollection of memories by the user.
+
+"""
+
+variantB = """
+   When interacting with the user, always ask questions that can be answered with a simple yes or no to streamline communication and maintain clarity.
 """
 
 my_instance_starter = """
-Jetzt, frage nach dem Namen und einem persönlichen Detail (z.B. Hobby, Beruf, Lebenserfahrung).
-Verwende diese im geschlechtsneutralem Gespräch in Du-Form.
-Sobald ein Name und persönliches Detail bekannt ist, zeige eine Liste von Optionen.
+Great the user in a welcoming and engaging and help him remember!
 """
 
 bot = Chatbot(
     database_file="database/chatbot.db",
-    type_id="coach",
-    user_id="daniel",
-    type_name="Health Coach",
+    type_id="base",
+    user_id="user1",
+    type_name="Base Assistant",
     type_role=my_type_role,
     instance_context=my_instance_context,
     instance_starter=my_instance_starter
 )
 
 bot.start()
+bot.reset()
 
-my_type_role_prompt = """
-   you're a bot that helps to write prompts for configuring GTP3.5 models.The prompts will be used to instruct GPT to behave like a therapy coach for patients with chronic deseases such as adiposity. Consequently, I will describe the intended behaviour of the coach and you should reply with one idea for one prompt which achieves the intended conversational behaviour. 
-   
 
-"""
-
-my_instance_context_prompt = """
-   The coach should converse with a user. The user should be able to ask questions related to their medication. 
-   The coach should also make sure that the user understands why it is important for them to take their medication. 
-   What could be a prompt that instructs GPT to behave like that
-"""
-
-my_instance_starter_prompt = """
-Do you need more information about your role and task or is that well-defined so far?
-"""
 
 bot = Chatbot(
     database_file="database/chatbot.db",
-    type_id="prompt_coach",
-    user_id="prompty",
-    type_name="Prompt Assistant",
-    type_role=my_type_role_prompt,
-    instance_context=my_instance_context_prompt,
-    instance_starter=my_instance_starter_prompt
+    type_id="varianta",
+    user_id="user2",
+    type_name="Assistant Variant A",
+    type_role=my_type_role,
+    instance_context=variantA,
+    instance_starter=my_instance_starter
+)
+bot.start()
+bot.reset()
+
+bot = Chatbot(
+    database_file="database/chatbot.db",
+    type_id="variantb",
+    user_id="user3",
+    type_name="Assistant Variant B",
+    type_role=my_type_role,
+    instance_context=variantB,
+    instance_starter=my_instance_starter
 )
 
 bot.start()
-
 
 @app.route("/")
 def index():
