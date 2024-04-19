@@ -1,19 +1,23 @@
 import logging
 import re
 import sqlite3
-
 import openai
 
-from .openai import OPENAI_KEY, OPENAI_MODEL
+
+from mistralai.client import MistralClient
+from mistralai.models.chat_completion import ChatMessage
+
+api_key = openai.MISTRAL_API_KEY
+model = openai.MISTRAL_MODEL
+
 from .persistence import Persistence
 
 logging.basicConfig(filename="chatbot.log", filemode="w", level=logging.DEBUG)
 
-openai.api_key = OPENAI_KEY
-openai.chat
+client = MistralClient(api_key=api_key)
 
 
-class Chatbot_openai:
+class Chatbot:
     default_type_name: str = "Grumpy Coach"
     default_type_role: str = "You are a grumpy coach. You talk to a user even though you don't feel like it. Always be verry brief. Format all responses using valid HTML (e.g., <br>, <p>, <ul>/<ol> with <li>, <b>)."
     default_instance_context: str = "You are now having a conversation with a user. Try to get rid of the user or support the user if you can't avoid it."
@@ -78,8 +82,8 @@ class Chatbot_openai:
         self._persistence.message_save(Persistence._user_label, content)
 
     def _openai(self) -> str:
-        chat = openai.chat.completions.create(
-            model=OPENAI_MODEL,
+        chat = client.chat(
+             model=model,   
             messages=self._persistence.messages_retrieve(with_system=True),
         )
         response: str = chat.choices[0].message.content
@@ -94,7 +98,7 @@ class Chatbot_openai:
 
         # Find all matches
         matches = pattern.findall(assistant_says)
-
+    
         # If no matches, return the original string inside a list
         if not matches:
             return [assistant_says]
